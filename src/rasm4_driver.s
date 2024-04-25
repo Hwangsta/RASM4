@@ -1,7 +1,7 @@
 /*
  * Programmers          : Mason Muoio & Alex Hwang
  * RASM                 : 3
- * Purpose              : Display menu for editing
+ * Purpose              : Display menu for editing 
  *                        a text file.
  * Author               : Dr. Barnett
  * Date late modified   : 2nd May 2024
@@ -16,22 +16,24 @@ szBuffer:      .skip    BUFFER
 
 
 
-
-
 chLF:       .byte    0x0a
 
 
    .text
 main:
 
+
 bl      displayMenu_driver
 ///////////////// FOR HEAP MEMORY CONSUMPTION - MAKE SURE EVERYTIME WE MALLOC, WE ADD THE BYTES UP ***********************//////////////////
+
 
 /******************************************************************************/
 
 
 /****** Free up heap allocations **********************************************/
+
  /*  mov   x0, x21                       // Move address of modified input1Str into x0
+
    bl    free                          // free that heap block
 
    mov   x0, x22                       // Move address of modified input2Str into x0
@@ -47,7 +49,9 @@ bl      displayMenu_driver
    ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
    bl    free                          // free that heap block
    ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
+
    bl    free                          // free that heap block */
+
 /******************************************************************************/
 
 

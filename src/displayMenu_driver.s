@@ -1,4 +1,4 @@
-.global displayMenu_driver:
+.global displayMenu_driver
 
    .data
 szMenu1:        .asciz          "\t\tRASM4 TEXT EDITOR\n"                                                                                                                                                       // RASM4 TEXT EDITOR
@@ -15,8 +15,11 @@ szMenu9:                        .asciz  "<4> Edit string. Given an index #, repl
 szMenu10:               .asciz  "<5> String search. Regardless of case, return all strings that match the substring given.\n\n"                                                 // <5> String search. Regardless of case, return all strings that
                                                                                                                                                                                                                 // match the substring given.
 szMenu11:               .asciz  "<6> Save File (output.txt)\n\n"                                                                                                                                                // <6> Save File (output.txt)
-szMenu12:               .asciz  "<7> Quit"                                                                                                                                                                      // <7> Quit
+
+szMenu12:               .asciz  "<7> Quit\n"                                                                                                                                                                    // <7> Quit
 szClear:                        .asciz  "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"                          // To clear terminal
+
+chLF:                           .byte   0x0a                                                                                                                                                                    // New line
 
    .text
 displayMenu_driver:
@@ -36,8 +39,15 @@ displayMenu_driver:
         ldr     x0,=szMenu2                                     // Load szMenu2
         bl              putstring                                       // Print szMenu2
 
+
+        ldr     x0,=chLF                                                // Load line feed
+        bl              putch                                                   // Print
+
         ldr     x0,=szMenu3                                     // Load szMenu3
         bl              putstring                                       // Print szMenu3
+
+        ldr     x0,=chLF                                                // Load line feed
+        bl              putch                                                   // Print
 
         ldr     x0,=szMenu4                                     // Load szMenu4
         bl              putstring                                       // Print szMenu4
@@ -65,11 +75,6 @@ displayMenu_driver:
 
         ldr     x0,=szMenu12                            // Load szMenu12
         bl              putstring                                       // Print szMenu12
-
-
-
-
-
 
 
    ldp   x29, x30, [sp], #16     // Pop x29 and x30, then move SP up 16 bytes
