@@ -15,10 +15,12 @@ szMenu9:                        .asciz  "<4> Edit string. Given an index #, repl
 szMenu10:               .asciz  "<5> String search. Regardless of case, return all strings that match the substring given.\n\n"                                                 // <5> String search. Regardless of case, return all strings that
                                                                                                                                                                                                                 // match the substring given.
 szMenu11:               .asciz  "<6> Save File (output.txt)\n\n"                                                                                                                                                // <6> Save File (output.txt)
+
 szMenu12:               .asciz  "<7> Quit\n"                                                                                                                                                                    // <7> Quit
 szClear:                        .asciz  "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"                          // To clear terminal
 
 chLF:                           .byte   0x0a                                                                                                                                                                    // New line
+
    .text
 displayMenu_driver:
    stp   x19, x20, [sp, #-16]!   // Push x19 and x20, then move SP down 16 bytes
@@ -36,6 +38,7 @@ displayMenu_driver:
 
         ldr     x0,=szMenu2                                     // Load szMenu2
         bl              putstring                                       // Print szMenu2
+
 
         ldr     x0,=chLF                                                // Load line feed
         bl              putch                                                   // Print
