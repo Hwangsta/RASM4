@@ -30,6 +30,10 @@ readInputFile_driver:
    stp   x27, x28, [sp, #-16]!   // Push x27 and x28, then move SP down 16 bytes
    stp   x29, x30, [sp, #-16]!   // Push x29 and x30, then move SP down 16 bytes
 
+        mov     x19,x0                                          // x0 is holding headPtr mov to x19 for later use
+        mov     x20,x1                                          // x1 is holding tailPtr mov to x20 for later use
+
+
 open_file:
    // open file
    mov     x0, #AT_FDCWD           // local directory
@@ -52,7 +56,13 @@ driver:
 
 /****** FOR TEST PURPOSES (delete later)************/
    ldr     x0,=fileBuf                     // print the line that was just read
-   bl      putstring                       // call putstring
+//   bl      putstring                       // call putstring
+
+        mov     x2,x0                                                   // store the current line string's address to x2
+        mov     x1,x20                                          //      re-load the tailPtr back into x1
+        mov     x0,x19                                          //      re-load the headPtr back into x0
+        bl              addNode                                         // pass parameters for adding a node and branch
+
 
    ldr     x0,=bFD                         //
    ldrb    w0,[x0]                         // x0 = bFD
@@ -70,7 +80,7 @@ exit:
         // Exit the driver
 
    ldp   x29, x30, [sp], #16     // Pop x29 and x30, then move SP up 16 bytes
-   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes
+   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes  
    ldp   x25, x26, [sp], #16     // Pop x25 and x26, then move SP up 16 bytes
    ldp   x23, x24, [sp], #16     // Pop x23 and x24, then move SP up 16 bytes
    ldp   x21, x22, [sp], #16     // Pop x21 and x22, then move SP up 16 bytes
@@ -116,6 +126,7 @@ EOLINE:
         add     x1,x1,#1         // we are going to make fileBuf into a c-string
         mov     w2,#0            // by store null at the end of fileBuf (i.e. "Cat in the hat.\0")
         strb    w2,[x1]
+
         b       skip
 
 // Handling case if we are at End of File

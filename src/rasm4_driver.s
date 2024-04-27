@@ -1,7 +1,7 @@
 /*
  * Programmers          : Mason Muoio & Alex Hwang
  * RASM                 : 3
- * Purpose              : Display menu for editing 
+ * Purpose              : Display menu for editing
  *                        a text file.
  * Author               : Dr. Barnett
  * Date late modified   : 2nd May 2024
@@ -14,7 +14,8 @@
 
 szBuffer:      .skip    BUFFER
 
-
+headPtr:                .quad  0                                                                // tail of the linked list
+tailPtr:                .quad  0                                                                // head of the linked list
 
 chLF:       .byte    0x0a
 
@@ -24,6 +25,16 @@ main:
 
 
 bl      displayMenu_driver
+
+
+ldr     x0,=headPtr
+ldr     x1,=tailPtr
+bl      readInputFile_driver
+
+
+ldr     x0,=headPtr
+bl              viewLinkedList_driver
+
 ///////////////// FOR HEAP MEMORY CONSUMPTION - MAKE SURE EVERYTIME WE MALLOC, WE ADD THE BYTES UP ***********************//////////////////
 
 
@@ -51,9 +62,6 @@ bl      displayMenu_driver
    ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
 
    bl    free                          // free that heap block */
-
-/******************************************************************************/
-
 
 /****** Terminate program ******/
    ldr   x0, =chLF                     // Load &chLF into x0
