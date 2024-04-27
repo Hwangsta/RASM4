@@ -1,0 +1,179 @@
+/*
+ * Programmers          : Mason Muoio & Chris Lewis
+ * RASM                 : 3
+ * Purpose              : Create a small collection of
+ *                        string functions.
+ * Author               : Dr. Barnett
+ * Date late modified   : 10 Apr 2024
+*/
+
+   .global main
+               .equ  BUFFER,  512
+
+   .data
+
+szBuffer:      .skip    BUFFER
+
+szMsgInput1:   .asciz   "s1 = "
+szMsgInput2:   .asciz   "s2 = "
+szMsgInput3:   .asciz   "s3 = "
+
+chLF:       .byte    0x0a
+
+
+   .text
+main:
+
+// Register info:
+//    X21 will hold address of input1 string
+//    X22 will hold address of input2 string
+//    X23 will hold address of input3 string
+
+/****** Get user input for three strings **************************************/
+   ldr   x0,  =chLF              // Load &chLF into x0
+   bl    putch                   // Print a new line char
+
+   ldr   x0, =szMsgInput1        // Load &szMsgInput1 into x0
+   bl    get_input               // Call helper function to get input
+   mov   x21, x0                 // Move address of the dynamic inputStr into x21
+
+   ldr   x0, =szMsgInput2        // Load &szMsgInput1 into x0
+   bl    get_input               // Call helper function to get input
+   mov   x22, x0                 // Move address of the dynamic inputStr into x22
+
+   ldr   x0, =szMsgInput3        // Load &szMsgInput1 into x0
+   bl    get_input               // Call helper function to get input
+   mov   x23, x0                 // Move address of the dynamic inputStr into x23
+
+   ldr   x0,  =chLF              // Load &chLF into x0
+   bl    putch                   // Print a new line char
+/******************************************************************************/
+
+
+/****** Load in parameters and call function drivers **************************/
+   mov   x0, x21                       // Move address of input1str into x0
+   mov   x1, x22                       // Move address of input2str into x1
+   mov   x2, x23                       // Move address of input2str into x1
+   bl    String_length_driver
+
+   mov   x0, x21                       // Move address of input1str into x0
+   mov   x1, x23                       // Move address of input3str into x1
+   bl    String_equals_driver
+
+   mov   x0, x21                       // Move address of input0str into x0
+   mov   x1, x22                       // Move address of input1str into x1
+   mov   x2, x23                       // Move address of input2str into x2
+   bl    String_equalsIgnoreCase_driver
+
+   mov   x0, x21                       // Move address of input1str into x0
+   bl    String_copy_driver
+
+   mov   x0, x23                       // Move address of input3str into x0
+   bl    String_substring_1_driver
+
+   mov   x0, x23                       // Move address of input3str into x0
+   bl    String_substring_2_driver
+
+   mov   x0, x22                       // Move address of input2str into x0
+   bl    String_charAt_driver
+
+   mov   x0, x21                       // Move address of input1str into x0
+   bl    String_startsWith_1_driver
+
+   mov   x0, x21                       // Move address of input1str into x0
+   bl    String_startsWith_2_driver
+
+   mov   x0, x21                       // Move address of input1str into x0
+   bl    String_endsWith_driver
+
+   mov   x0, x22                       // Move address of input2str into x0
+   bl    String_indexOf_1_driver
+
+   mov   x0, x22                       // Move address of input2str into x0
+   bl    String_indexOf_2_driver
+
+        mov   x0, x22                       // Move address of input2str into x0
+   bl    String_indexOf_3_driver
+
+   mov   x0, x22                       // Move address of input2str into x0
+        bl    String_lastIndexOf_1_driver
+
+   mov   x0, x22                       // Move address of input2str into x0
+   bl    String_lastIndexOf_2_driver
+
+   mov   x0, x22                       // Move address of input2str into x0
+   bl    String_lastIndexOf_3_driver
+
+   mov   x0, x21                       // Move address of input1str into x0
+   bl    String_replace_driver
+   str   x21, [sp, #-16]!              // Store the original &input1Str on the stack
+   mov   x21, x0                       // input1Str = result from String_replace
+
+        mov   x0, x21                       // Move address of input1str into x0
+   bl    String_toLowerCase_driver
+   str   x21, [sp, #-16]!              // Store the original &input1Str on the stack
+   mov   x21, x0                       // input1Str = result from String_toLowerCase
+
+   mov   x0, x21                       // Move address of input1str into x0
+   bl    String_toUpperCase_driver
+   str   x21, [sp, #-16]!              // Store the original &input1Str on the stack
+   mov   x21, x0                       // input1Str = result from String_toUpperCase
+
+   mov   x0, x21                       // Move address of input1str into x0
+   mov   x1, x22                       // Move address of input2str into x1
+   bl    String_concat_driver
+   str   x21, [sp, #-16]!              // Store the original &input1Str on the stack
+   mov   x21, x0                       // input1Str = result from String_concat
+/******************************************************************************/
+
+
+/****** Free up heap allocations **********************************************/
+   mov   x0, x21                       // Move address of modified input1Str into x0
+   bl    free                          // free that heap block
+
+   mov   x0, x22                       // Move address of modified input2Str into x0
+   bl    free                          // free that heap block
+
+   mov   x0, x23                       // Move address of modified input3Str into x0
+   bl    free                          // free that heap block
+
+   ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
+   bl    free                          // free that heap block
+   ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
+   bl    free                          // free that heap block
+   ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
+   bl    free                          // free that heap block
+   ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
+   bl    free                          // free that heap block
+/******************************************************************************/
+
+
+/****** Terminate program ******/
+   ldr   x0, =chLF                     // Load &chLF into x0
+   bl    putch                         // Print a new line char
+
+   mov   x0, #0                        // Use 0 return code
+   mov   x8, #93                       // Service code 93 terminates
+   svc   0                             // Call Linux to terminate
+
+
+/****** Helper function for getting input *************************************/
+get_input:
+   str   x30, [sp, #16]!               // Push link register to stack
+
+   bl    putstring                     // Print input prompt stored in x0 parameter
+
+   ldr   x0, =szBuffer                 // Load &szBuffer into x0
+   mov   x1, #BUFFER                   // Load max buffer length into x1
+   bl    getstring                     // Store input string from user in szBuffer
+
+   ldr   x0, =szBuffer                 // Load &szBuffer
+   bl    String_copy                   // Make a dynamically allocated copy
+
+   ldr   x30, [sp], #16                // Pop link register off of stack
+
+   RET                                 // Return to caller
+/******************************************************************************/
+
+
+   .end
