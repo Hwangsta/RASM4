@@ -14,7 +14,7 @@
 
    .data
 
-szFile:  .asciz   "input.txt"                           // file to be read from
+szFile:  .asciz   "test.txt"                            // file to be read from
 fileBuf: .skip    512                                           // space in text file
 bFD:     .byte    0                                                // byte initialized to zero
 szEOF:   .asciz   "Reached the End of File\n"   // if reach max space in text file
@@ -32,7 +32,8 @@ readInputFile_driver:
 
         mov     x19,x0                                          // x0 is holding headPtr mov to x19 for later use
         mov     x20,x1                                          // x1 is holding tailPtr mov to x20 for later use
-
+        mov     x21,x2                                          //      x2 is holding the address of dbNumNodes and moving it into x21
+        mov     x22,x3                                          // x3 is holding the address of dbStrBytes and moving it into x22
 
 open_file:
    // open file
@@ -58,6 +59,8 @@ driver:
    ldr     x0,=fileBuf                     // print the line that was just read
 //   bl      putstring                       // call putstring
 
+        mov     x4,x22                                                  //      strBytes's address is passed as a parameter in x4
+        mov     x3,x21                                                  //      numNodes's address is passed as a parameter in x3
         mov     x2,x0                                                   // store the current line string's address to x2
         mov     x1,x20                                          //      re-load the tailPtr back into x1
         mov     x0,x19                                          //      re-load the headPtr back into x0
