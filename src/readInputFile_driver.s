@@ -14,7 +14,7 @@
 
    .data
 
-szFile:  .asciz   "test.txt"                            // file to be read from
+szFile:  .asciz   "input.txt"                           // file to be read from
 fileBuf: .skip    512                                           // space in text file
 bFD:     .byte    0                                                // byte initialized to zero
 szEOF:   .asciz   "Reached the End of File\n"   // if reach max space in text file
@@ -55,8 +55,14 @@ driver:
    beq     close_file                      // close file if reached end
 
 /****** FOR TEST PURPOSES (delete later)************/
-//   ldr     x0,=fileBuf                     // print the line that was just read
+   ldr     x0,=fileBuf                     // print the line that was just read
 //   bl      putstring                       // call putstring
+
+        mov     x2,x0                                                   // store the current line string's address to x2
+        mov     x1,x20                                          //      re-load the tailPtr back into x1
+        mov     x0,x19                                          //      re-load the headPtr back into x0
+        bl              addNode                                         // pass parameters for adding a node and branch
+
 
    ldr     x0,=bFD                         //
    ldrb    w0,[x0]                         // x0 = bFD
@@ -103,9 +109,6 @@ top:
    cmp     w0,#0x0               // nothing read from file
    beq     EOF                   // got EOF if equal to 0x0
 
-// save first address into string buffer
-        mov     x21,x1
-
    ldrb    w2,[x1]               // x0 = bFD
    cmp     w2,#0xa               // is this character LF?
 
@@ -123,15 +126,6 @@ EOLINE:
         add     x1,x1,#1         // we are going to make fileBuf into a c-string
         mov     w2,#0            // by store null at the end of fileBuf (i.e. "Cat in the hat.\0")
         strb    w2,[x1]
-
-//      this is for testing
-        mov     x0,x21
-        bl              putstring
-
-        mov     x2,x21                                                  // store the current line string's address to x2
-        mov     x1,x20                                          //      re-load the tailPtr back into x1
-        mov     x0,x19                                          //      re-load the headPtr back into x0
-        bl              addNode                                         // pass parameters for adding a node and branch
 
         b       skip
 
