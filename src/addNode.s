@@ -24,8 +24,17 @@ addNode:
 
         // double de-reference because we are passing the address of the pointers from main
 
+        // x0 = &headPtr, x1 = &tailPtr, x2 = string buffer, x3 = &numNodes, x4 = &strBytes
         mov     x19,x0                                  // Save original headpointer address
         mov     x20,x1                                  // Save original tailpointer address
+
+        mov     x28,x4
+
+        //      increment the number of nodes
+        ldr     x27,[x3]                                        // de-reference address
+        add     x27,x27,#1                              // increment x27
+        str     x27,[x3]                                        // store the incremented nodes back into numNodes
+
 
         ldr     x0,[x0]                                         // double de-reference headPtr and put contents into x0
         ldr     x8,=headPtr                             // Load address of local headPtr variable into x19
@@ -36,6 +45,13 @@ addNode:
         str     x1,[x8]                                         // Store actual tailptr (local to rasm3_driver) into tailPtr
 
         mov     x21,x2                                                  // Move address of string to copy into x0
+
+        //      increment the number of bytes
+        mov     x0,x21                                  // move the string's address in x0
+        bl              String_length                   // get the string's length
+        add     x0,x0,#1                                        // add the null terminator
+        str     x0,[x28]                                        // store the incremented bytes back into strBytes
+
 
 
    // Step 1:      Create new node
