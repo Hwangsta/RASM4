@@ -14,11 +14,12 @@
 
 szBuffer:      .skip    BUFFER
 
-headPtr:       .quad    0                              // tail of the linked list
-tailPtr:       .quad    0                              // head of the linked list
 
-dbNumNodes:             .quad           0                                                                                // number of nodes, used to pass as parameter
-dbStrBytes:             .quad           0                                                                                // number of bytes of all the strings, used to pass as parameter
+headPtr_main:       .quad    0                              // tail of the linked list
+tailPtr_main:       .quad    0                              // head of the linked list
+
+dbNumNodes:             .quad           0              // number of nodes, used to pass as parameter
+dbStrBytes:             .quad           0              // number of bytes of all the strings, used to pass as parameter
 
 chLF:           .byte    0x0a
 
@@ -31,13 +32,23 @@ ldr     x1,=dbStrBytes
 bl      displayMenu_driver
 
 
-ldr     x0,=headPtr
-ldr     x1,=tailPtr
+ldr     x0,=headPtr_main
+ldr     x1,=tailPtr_main
+ldr       x2,=dbNumNodes
+ldr       x3,=dbStrBytes
 bl      readInputFile_driver
 
 
-//ldr     x0,=headPtr
-//bl              viewLinkedList_driver
+
+ldr     x0,=headPtr_main
+bl      viewLinkedList_driver
+
+ldr     x0,=dbNumNodes
+ldr     x1,=dbStrBytes
+bl      displayMenu_driver
+
+
+
 
 ///////////////// FOR HEAP MEMORY CONSUMPTION - MAKE SURE EVERYTIME WE MALLOC, WE ADD THE BYTES UP ***********************//////////////////
 

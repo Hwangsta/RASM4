@@ -52,6 +52,7 @@ addNode:
         add     x0,x0,#1                                        // add the null terminator
                   ldr            x1,[x28]                                                                                       // Load string length (rasm3_driver)
                   add            x0,x0,x1                                                                                       // Accumulate new string length into total bytes of strings
+
         str     x0,[x28]                                        // store the incremented bytes back into strBytes
 
 
