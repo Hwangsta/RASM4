@@ -26,10 +26,6 @@ chLF:           .byte    0x0a
    .text
 main:
 
-ldr     x0,=dbNumNodes
-ldr     x1,=dbStrBytes
-bl      displayMenu_driver
-
 
 ldr     x0,=headPtr_main
 ldr     x1,=tailPtr_main
@@ -37,14 +33,27 @@ ldr     x2,=dbNumNodes
 ldr     x3,=dbStrBytes
 bl      readInputFile_driver
 
+ldr     x0,=dbNumNodes
+ldr     x1,=dbStrBytes
+bl      displayMenu_driver
 
 
 ldr     x0,=headPtr_main
 bl      viewLinkedList_driver
 
+
 mov     x2, #3
 ldr     x0,=headPtr_main
 ldr     x1,=tailPtr_main
+ldr     x3,=dbNumNodes
+ldr     x4,=dbStrBytes
+bl      deleteNode_driver
+
+mov     x2, #6
+ldr     x0,=headPtr_main
+ldr     x1,=tailPtr_main
+ldr     x3,=dbNumNodes
+ldr     x4,=dbStrBytes
 bl      deleteNode_driver
 
 
