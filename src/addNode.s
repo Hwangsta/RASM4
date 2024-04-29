@@ -1,4 +1,4 @@
-   .global addNode
+.global addNode
 
         .equ                    NODE_SIZE,      16                                                                              // Size of Node of linked list
    .data
@@ -14,7 +14,7 @@ tailPtr:       .quad            0                         // head of the linked 
 
 addNode:
 
-        stp   x19, x20, [sp, #-16]!   // Push x19 and x20, then move SP down 16 bytes
+   stp   x19, x20, [sp, #-16]!   // Push x19 and x20, then move SP down 16 bytes
    stp   x21, x22, [sp, #-16]!   // Push x21 and x22, then move SP down 16 bytes
    stp   x23, x24, [sp, #-16]!   // Push x23 and x24, then move SP down 16 bytes
    stp   x25, x26, [sp, #-16]!   // Push x25 and x26, then move SP down 16 bytes
@@ -46,10 +46,13 @@ addNode:
 
         mov     x21,x2                                                  // Move address of string to copy into x0
 
-        //      increment the number of bytes
+        //  Accumulate the number of bytes
         mov     x0,x21                                  // move the string's address in x0
-        bl              String_length                   // get the string's length
+        bl      String_length                   // get the string's length
         add     x0,x0,#1                                        // add the null terminator
+                  ldr            x1,[x28]                                                                                       // Load string length (rasm3_driver)
+                  add            x0,x0,x1                                                                                       // Accumulate new string length into total bytes of strings
+
         str     x0,[x28]                                        // store the incremented bytes back into strBytes
 
 
@@ -105,7 +108,7 @@ exit_sequence:
         str     x0,[x20]
 
    ldp   x29, x30, [sp], #16     // Pop x29 and x30, then move SP up 16 bytes
-   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes  
+   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes
    ldp   x25, x26, [sp], #16     // Pop x25 and x26, then move SP up 16 bytes
    ldp   x23, x24, [sp], #16     // Pop x23 and x24, then move SP up 16 bytes
    ldp   x21, x22, [sp], #16     // Pop x21 and x22, then move SP up 16 bytes

@@ -3,6 +3,7 @@
    .data
 szMenu1:        .asciz          "\t\tRASM4 TEXT EDITOR\n"                                                                                                                                                       // RASM4 TEXT EDITOR
 szMenu2:        .asciz          "\tData Structure Heap Memory Consumption: "                                                                                                                                    // Data Structure Heap Memory Consumption:
+szMenu2b:               .asciz  " bytes\n"                                                                                                                                                                      //  bytes
 szMenu3:        .asciz          "\tNumber of Nodes: "                                                                                                                                                           // Number of Nodes:
 szMenu4:        .asciz          "<1> View all strings\n\n"                                                                                                                                                      // <1> View all strings
 szMenu5:        .asciz          "<2> Add string\n"                                                                                                                                                              // <2> Add string
@@ -15,12 +16,15 @@ szMenu9:                        .asciz  "<4> Edit string. Given an index #, repl
 szMenu10:               .asciz  "<5> String search. Regardless of case, return all strings that match the substring given.\n\n"                                                 // <5> String search. Regardless of case, return all strings that
                                                                                                                                                                                                                 // match the substring given.
 szMenu11:               .asciz  "<6> Save File (output.txt)\n\n"                                                                                                                                                // <6> Save File (output.txt)
-
 szMenu12:               .asciz  "<7> Quit\n"                                                                                                                                                                    // <7> Quit
 szClear:                        .asciz  "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"                          // To clear terminal
 
-chLF:                           .byte   0x0a                                                                                                                                                                    // New line
+szZeroBytes:    .asciz  "00000000"                                                                                                                                                                              // 0000000
 
+szNumNodes:             .skip           21                                                                                                                                                                      // String to hold number of nodes
+szTotalBytes:   .skip           21                                                                                                                                                                              // String to hold number of total bytes
+
+chLF:                           .byte   0x0a                                                                                                                                                                    // New line
    .text
 displayMenu_driver:
    stp   x19, x20, [sp, #-16]!   // Push x19 and x20, then move SP down 16 bytes
@@ -29,6 +33,10 @@ displayMenu_driver:
    stp   x25, x26, [sp, #-16]!   // Push x25 and x26, then move SP down 16 bytes
    stp   x27, x28, [sp, #-16]!   // Push x27 and x28, then move SP down 16 bytes
    stp   x29, x30, [sp, #-16]!   // Push x29 and x30, then move SP down 16 bytes
+
+        // Save dbNumNodes & dbStrBytes (rasm3_driver in x19 & x20)
+        mov     x19,x0                                          // Move address of dbNumNodes to x19
+        mov     x20,x1                                          // Move address of dbStrBytes to x20
 
         ldr     x0,=szClear                                     // Load szClear
         bl              putstring                                       // Clear the terminal
@@ -39,12 +47,43 @@ displayMenu_driver:
         ldr     x0,=szMenu2                                     // Load szMenu2
         bl              putstring                                       // Print szMenu2
 
+        // load parameters for calcBytes
+        mov     x0,x19                                          // Move numNodes back to x0
+        mov     x1,x20                                          // Move strBytes back to x1
 
-        ldr     x0,=chLF                                                // Load line feed
-        bl              putch                                                   // Print
+        bl              calcBytes                                       // Calculate bytes
 
+        mov     x21,x0                                          // Move total # of bytes into x21
+
+        /****************** Convert total bytes to str and output ******************/
+        ldr     x1,=szTotalBytes                        // Load address of szTotalBytes into x1
+
+        bl              int64asc                                                // Convert int to str
+
+        cmp     x21,#0                                          // Check if total bytes is 0
+        beq     total_bytes_zero                        // Branch if total bytes is 0
+
+        ldr     x0,=szTotalBytes                        // Load address of converted int
+        bl              putstring                                       // Print
+
+print_total_bytes:
+        ldr     x0,=szMenu2b                            // Load szMenu3b
+        bl              putstring                                       // Print szMenu3b
+
+
+//  PRINT # OF NODES
         ldr     x0,=szMenu3                                     // Load szMenu3
         bl              putstring                                       // Print szMenu3
+
+        /****************** Convert dbNumNodes to str and output ******************/
+        mov     x0,x19                                          // Load address of dbNumNodes
+        ldr     x0,[x0]                                         // Load contents of dbNumNodes
+        ldr     x1,=szNumNodes                          // Load address of szNumNodes into x1
+
+        bl              int64asc                                                // Convert int to str
+
+        ldr     x0,=szNumNodes                          // Load address of converted int
+        bl              putstring                                       // Print
 
         ldr     x0,=chLF                                                // Load line feed
         bl              putch                                                   // Print
@@ -85,5 +124,10 @@ displayMenu_driver:
    ldp   x19, x20, [sp], #16     // Pop x19 and x20, then move SP up 16 bytes
 
    RET                           // Return to caller
+
+total_bytes_zero:
+        ldr     x0,=szZeroBytes
+        bl              putstring
+        b               print_total_bytes
 
    .end

@@ -1,4 +1,4 @@
-   .global readInputFile_driver
+.global readInputFile_driver
 
 // file modes
                                         .equ  R,    00          // Read only
@@ -14,7 +14,7 @@
 
    .data
 
-szFile:  .asciz   "test.txt"                            // file to be read from
+szFile:  .asciz   "input.txt"                            // file to be read from
 fileBuf: .skip    512                                           // space in text file
 bFD:     .byte    0                                                // byte initialized to zero
 szEOF:   .asciz   "Reached the End of File\n"   // if reach max space in text file
@@ -56,15 +56,15 @@ driver:
    beq     close_file                      // close file if reached end
 
 /****** FOR TEST PURPOSES (delete later)************/
-   ldr     x0,=fileBuf                     // print the line that was just read
-//   bl      putstring                       // call putstring
 
-        mov     x4,x22                                                  //      strBytes's address is passed as a parameter in x4
-        mov     x3,x21                                                  //      numNodes's address is passed as a parameter in x3
-        mov     x2,x0                                                   // store the current line string's address to x2
-        mov     x1,x20                                          //      re-load the tailPtr back into x1
-        mov     x0,x19                                          //      re-load the headPtr back into x0
-        bl              addNode                                         // pass parameters for adding a node and branch
+   ldr     x0,=fileBuf                     // print the line that was just read
+
+   mov     x4,x22                                                  //      strBytes's address is passed as a parameter in x4
+   mov     x3,x21                                                  //      numNodes's address is passed as a parameter in x3
+   mov     x2,x0                                                   // store the current line string's address to x2
+   mov     x1,x20                                          //      re-load the tailPtr back into x1
+   mov     x0,x19                                          //      re-load the headPtr back into x0
+   bl      addNode                                         // pass parameters for adding a node and branch
 
 
    ldr     x0,=bFD                         //
@@ -83,7 +83,7 @@ exit:
         // Exit the driver
 
    ldp   x29, x30, [sp], #16     // Pop x29 and x30, then move SP up 16 bytes
-   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes  
+   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes
    ldp   x25, x26, [sp], #16     // Pop x25 and x26, then move SP up 16 bytes
    ldp   x23, x24, [sp], #16     // Pop x23 and x24, then move SP up 16 bytes
    ldp   x21, x22, [sp], #16     // Pop x21 and x22, then move SP up 16 bytes
@@ -110,6 +110,7 @@ top:
    bl      getchar               // branch and link
 
    cmp     w0,#0x0               // nothing read from file
+        blt       ERROR                                         // if less than handle error
    beq     EOF                   // got EOF if equal to 0x0
 
    ldrb    w2,[x1]               // x0 = bFD
@@ -134,11 +135,16 @@ EOLINE:
 
 // Handling case if we are at End of File
 EOF:
-        mov     x19,x0
-        ldr     x0,=szEOF
-        bl      putstring
-        mov     x0,x19
-        b       skip
+        // Assuming x1 points to the current position in fileBuf
+         sub            x1,x1,#1
+    ldrb    w2, [x1]               // Check the current buffer position
+    cbz     w2, skip               // If zero, skip processing (buffer empty)
+    // Process the remaining data in buffer as a line
+    add     x1, x1, #1             // Move buffer pointer forward for null termination
+    mov     w2, #0                 // Prepare a zero byte
+    strb    w2, [x1]               // Null-terminate the string
+    mov     x0, x19                // Restore original x0 if needed
+    b       skip                   // Proceed to return
 
 // Error if file cannot be oppened
 ERROR:

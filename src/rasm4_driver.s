@@ -33,25 +33,27 @@ bl      displayMenu_driver
 
 ldr     x0,=headPtr_main
 ldr     x1,=tailPtr_main
-ldr       x2,=dbNumNodes
-ldr       x3,=dbStrBytes
+ldr     x2,=dbNumNodes
+ldr     x3,=dbStrBytes
 bl      readInputFile_driver
+
 
 
 ldr     x0,=headPtr_main
 bl      viewLinkedList_driver
 
-mov     x3, #3
+mov     x2, #3
 ldr     x0,=headPtr_main
 ldr     x1,=tailPtr_main
-bl              deleteNode_driver
+bl      deleteNode_driver
 
-//ldr     x0,=headPtr_main
-//bl      viewLinkedList_driver
 
 ldr     x0,=dbNumNodes
 ldr     x1,=dbStrBytes
 bl      displayMenu_driver
+
+ldr     x0,=headPtr_main
+bl      viewLinkedList_driver
 
 
 ///////////////// FOR HEAP MEMORY CONSUMPTION - MAKE SURE EVERYTIME WE MALLOC, WE ADD THE BYTES UP ***********************//////////////////

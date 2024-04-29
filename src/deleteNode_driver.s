@@ -1,4 +1,4 @@
-   .global deleteNode_driver
+.global deleteNode_driver
 
    .data
 
@@ -35,27 +35,20 @@ traverse_loop:
          b               traverse_loop
 
 previous_index_found:
-        mov     x3, x19
+        sub     x19,x19,#8
 
-        mov     x25, x0 //test
-        mov     x26, x1//test
-// print previos node
-        ldr     x0,[x19]//test
-        bl              putstring//test
-
-        mov     x0, x25//test
-        mov     x1, x26//test
+                mov     x3,x19
 
    add   x19,x19,#8                              // jump the x1 -> next field
-   ldr     x19,[x19]                                                                             // dereference the next pointer
+   ldr     x20,[x19]                                                                             // dereference the next pointer
 
-        mov     x2, x19
+        mov     x2, x20
         bl              deleteNode
 
 traverse_exit:
 
    ldp   x29, x30, [sp], #16     // Pop x29 and x30, then move SP up 16 bytes
-   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes  
+   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes
    ldp   x25, x26, [sp], #16     // Pop x25 and x26, then move SP up 16 bytes
    ldp   x23, x24, [sp], #16     // Pop x23 and x24, then move SP up 16 bytes
    ldp   x21, x22, [sp], #16     // Pop x21 and x22, then move SP up 16 bytes
