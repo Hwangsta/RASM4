@@ -43,6 +43,14 @@ bl      readInputFile_driver
 ldr     x0,=headPtr_main
 bl      viewLinkedList_driver
 
+mov     x3, #3
+ldr     x0,=headPtr_main
+ldr     x1,=tailPtr_main
+bl              deleteNode_driver
+
+//ldr     x0,=headPtr_main
+//bl      viewLinkedList_driver
+
 ldr     x0,=dbNumNodes
 ldr     x1,=dbStrBytes
 bl      displayMenu_driver
