@@ -6,3 +6,7 @@ UPDATE: When testing viewLinkedList (traversal and print), we are running into t
 Check addNode.s to see why the list was not initiated. Maybe its an issue with headptr (main) being different from the local variable (addNode) as the local variable has its own address. (FINISHED)
 
 UPDATE: When we implement code for user to enter a string, make sure to pass headptr, tailptr, dbNumNodes, and dbStrBytes into the fxn
+
+COMPLETED option <3> deleting a node based off an index #
+
+CAN USE NUMNODES IN RASM4_DRIVER TO CHECK IF THE INDEX # INPUT BY THE USER (<3>) IS BEYOND THE # OF NODES. CAN THROW AN ERROR MSG AND REPROMPT THE USER
