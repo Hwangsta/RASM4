@@ -1,6 +1,10 @@
-   .global viewLinkedList_driver
+.global viewLinkedList_driver
 
    .data
+
+szOutput:       .asciz  "**************** Linked List ****************"         // Output label for linked list output
+
+chLF:                   .byte           0x0a                                                                                                                            // line feed
 
    .text
 viewLinkedList_driver:
@@ -12,31 +16,38 @@ viewLinkedList_driver:
    stp   x29, x30, [sp, #-16]!   // Push x29 and x30, then move SP down 16 bytes
 
 traverse:
-        // Additionally, we have to preserve the LR due to BL MALLOC
-        mov     x19,x0
+
+        mov   x19,x0
+
+        ldr     x0,=chLF                                                // Load &chLF into x0
+        bl              putch                                                   // Print
+
+        ldr     x0,=szOutput                            // Load &szOutput into x0
+        bl              putstring                                       // Print
+
+        ldr     x0,=chLF                                                // Load &chLF into x0
+        bl              putch                                                   // Print
 
 traverse_top:
-        ldr     x19,[x19]
+   ldr   x19,[x19]
 
-        cmp     x19,#0                                  // checking for empty list
-        beq     traverse_exit
+   cmp   x19,#0                                  // checking for empty list
+   beq   traverse_exit
 
-        str     x19,[sp,#-16]!
+   str   x19,[sp,#-16]!
 
-        ldr     x0,[x19]                                // double de-reference
-        bl      putstring
+   ldr   x0,[x19]                                // double de-reference
+   bl    putstring
 
-        ldr     x19,[sp],#16
+        ldr   x19,[sp],#16
 
-        add     x19,x19,#8                              // jump the x1 -> next field
-        b               traverse_top
+   add   x19,x19,#8                              // jump the x1 -> next field
+   b     traverse_top
 
 traverse_exit:
 
-
-
    ldp   x29, x30, [sp], #16     // Pop x29 and x30, then move SP up 16 bytes
-   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes  
+   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes
    ldp   x25, x26, [sp], #16     // Pop x25 and x26, then move SP up 16 bytes
    ldp   x23, x24, [sp], #16     // Pop x23 and x24, then move SP up 16 bytes
    ldp   x21, x22, [sp], #16     // Pop x21 and x22, then move SP up 16 bytes
