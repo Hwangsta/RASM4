@@ -1,4 +1,4 @@
-.global displayMenu_driver
+   .global displayMenu_driver
 
    .data
 szMenu1:        .asciz          "\t\tRASM4 TEXT EDITOR\n"                                                                                                                                                       // RASM4 TEXT EDITOR
@@ -16,8 +16,8 @@ szMenu9:                        .asciz  "<4> Edit string. Given an index #, repl
 szMenu10:               .asciz  "<5> String search. Regardless of case, return all strings that match the substring given.\n\n"                                                 // <5> String search. Regardless of case, return all strings that
                                                                                                                                                                                                                 // match the substring given.
 szMenu11:               .asciz  "<6> Save File (output.txt)\n\n"                                                                                                                                                // <6> Save File (output.txt)
-szMenu12:               .asciz  "<7> Quit\n\n"                                                                                                                                                                    // <7> Quit
-szClear:                        .asciz  "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"                          // To clear terminal
+szMenu12:               .asciz  "<7> Quit\n\n"                                                                                                                                                                  // <7> Quit
+szClear:                        .asciz  "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"                                                                                                // To clear terminal
 
 szZeroBytes:    .asciz  "00000000"                                                                                                                                                                              // 0000000
 
