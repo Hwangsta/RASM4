@@ -28,8 +28,6 @@ getStringFromUser_driver:
 
         ldr     x0,=chLF                                                // Load &chLF into x0
         bl              putch                                                   // Print line feed
-        ldr     x0,=chLF                                                // Load &chLF into x0
-        bl              putch                                                   // Print line feed
 
         // Requesting user to enter string
         ldr     x0,=szPrompt                            // Load &szPrompt into x0
@@ -39,6 +37,44 @@ getStringFromUser_driver:
         mov     x1,BUFFER                                       // Load 512 into x1
         bl              getstring                                       // Get string from user
 
+        ldr     x0,=szBuffer
+
+// TRAVERSE STRING TO ADD LINE FEED BEFORE NULL
+// REPLACE NULL WITH LF THEN ADD NULL TO ADDRESS+1
+
+        // Initialize counter
+        mov     x23,#0
+
+        mov     x24,x0                                          // Store address of string in x24
+
+traverse_string:
+        ldrb    w1,[x0,x23]                                     // Load contents of string
+
+        cmp     w1,#0                                                   // Compare the indexed byte to null
+        beq     end_of_string                           // branch to end_of_string if null
+
+        add     x23,x23,#1                                      // Add 1 to counter
+
+        b               traverse_string                 // Loop back
+end_of_string:
+        add     x2,x0,x23                                       // Address of null into x2
+        mov     w3,#0x0a                                                // Move line feed into x3
+
+        strb    w3,[x2]                                         // Store line feed into address that has null
+
+        add     x2,x2,#1                                                // Add 1 to the address of line feed (replaced null)
+
+        mov     w3,#0                                                   // Move null into x3
+        strb    w3,[x2]                                         // Store null into address after line feed
+
+        //testinggg
+        mov     x0,x24
+
+        bl              putstring
+        ldr     x0,=chLF
+        bl              putch
+
+        // Load parameters for addNode
         mov     x0,x19                                          // Store &headPtr back into x0
         mov     x1,x20                                          // Store &tailPtr back into x1
         ldr     x2,=szBuffer                            // store &szBuffer into x2
