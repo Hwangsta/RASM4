@@ -1,4 +1,4 @@
-   .global deleteNode
+ .global deleteNode
 
    .data
 
@@ -55,7 +55,7 @@ delete_head:
         ldr     x23,[x23]                                       // get the address of next node
 
         ldr     x0,[x21]                                                // dereference nodePtr
-        bl              free                                                    // free the string
+        bl      free                                                    // free the string
 
         mov     x0, x21                                         // move the address of nodePtr into x0
         bl              free                                                    // free the Node
@@ -72,9 +72,9 @@ next_null:
         bl              free                                                    // free the Node
 
         mov     x27,#0x0
-   str     x27,[x23]
+        str     x27,[x19]
 
-   str     x27,[x24]
+   str     x27,[x20]
 
         b               exit_sequence
 
@@ -100,7 +100,7 @@ delete_tail:
 
 exit_sequence:
    ldp   x29, x30, [sp], #16     // Pop x29 and x30, then move SP up 16 bytes
-   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes  
+   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes
    ldp   x25, x26, [sp], #16     // Pop x25 and x26, then move SP up 16 bytes
    ldp   x23, x24, [sp], #16     // Pop x23 and x24, then move SP up 16 bytes
    ldp   x21, x22, [sp], #16     // Pop x21 and x22, then move SP up 16 bytes
