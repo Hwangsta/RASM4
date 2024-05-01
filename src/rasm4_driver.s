@@ -72,7 +72,7 @@ skip_1:
 
 case_2:
 
-        ldr     x0,=szCase2Output                                                                               // load address of prompt
+        ldr     x0,=szCase2Out                                                                               // load address of prompt
         bl              putstring                                                                                               // call function
 
         bl              get_input                                                                                               // call get_input to check for 'a' or 'b'
