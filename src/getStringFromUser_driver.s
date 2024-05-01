@@ -67,13 +67,6 @@ end_of_string:
         mov     w3,#0                                                   // Move null into x3
         strb    w3,[x2]                                         // Store null into address after line feed
 
-        //testinggg
-        mov     x0,x24
-
-        bl              putstring
-        ldr     x0,=chLF
-        bl              putch
-
         // Load parameters for addNode
         mov     x0,x19                                          // Store &headPtr back into x0
         mov     x1,x20                                          // Store &tailPtr back into x1
