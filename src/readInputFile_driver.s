@@ -1,5 +1,7 @@
 .global readInputFile_driver
 
+                                        .equ BUFFER, 512                        // Buffer size
+
 // file modes
                                         .equ  R,    00          // Read only
                .equ  W,    01          // Write only
@@ -14,12 +16,12 @@
 
    .data
 
-szFile:  .asciz   "input.txt"                            // file to be read from
-fileBuf: .skip    512                                           // space in text file
-bFD:     .byte    0                                                // byte initialized to zero
-szEOF:   .asciz   "Reached the End of File\n"   // if reach max space in text file
-szERROR: .asciz   "FILE READ ERROR\n"                   // error message
-
+szFile:         .skip           BUFFER                            // file to be read from
+fileBuf:        .skip    BUFFER                                           // space in text file
+bFD:            .byte    0                                                // byte initialized to zero
+szEOF:          .asciz   "Reached the End of File\n"   // if reach max space in text file
+szERROR:        .asciz   "FILE READ ERROR\n"                   // error message
+szPrompt:       .asciz  "\nEnter file name: "                           // prompt for user to enter file
 
    .text
 readInputFile_driver:
@@ -35,6 +37,14 @@ readInputFile_driver:
         mov     x21,x2                                          //      x2 is holding the address of dbNumNodes and moving it into x21
         mov     x22,x3                                          // x3 is holding the address of dbStrBytes and moving it into x22
 
+        // get file name from user
+        ldr     x0,=szPrompt
+        bl              putstring
+
+        ldr     x0,=szFile                                              // load address that holds file name
+        mov     x1, BUFFER                                              // load buffer size
+        bl              getstring                                               // get string from user
+
 open_file:
    // open file
    mov     x0, #AT_FDCWD           // local directory
@@ -47,6 +57,17 @@ open_file:
 
    ldr     x4,=bFD                         // point to bFD
    strb    w0,[x4]                         // store w0 in bFD
+
+// check if file read correctly
+        cmp     x0,#-1                                                          // compare to -1
+        bgt     successful_read                                 // skip error message
+
+   ldr     x0,=szERROR                                          // load address
+   bl      putstring                                                    // call putstring
+
+        b                 exit                                                          // exit code
+successful_read:
+
 
 driver:
    ldr     x1,=fileBuf                     // load address
@@ -140,6 +161,12 @@ EOF:
     ldrb    w2, [x1]               // Check the current buffer position
     cbz     w2, skip               // If zero, skip processing (buffer empty)
     // Process the remaining data in buffer as a line
+
+         // add a new line at end of file
+         add     x1, x1, #1             // Move buffer pointer forward for null termination
+    mov     w2, #0xa               // Prepare a zero byte
+    strb    w2, [x1]               // Null-terminate the string
+
     add     x1, x1, #1             // Move buffer pointer forward for null termination
     mov     w2, #0                 // Prepare a zero byte
     strb    w2, [x1]               // Null-terminate the string
