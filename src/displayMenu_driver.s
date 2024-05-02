@@ -17,7 +17,7 @@ szMenu10:               .asciz  "<5> String search. Regardless of case, return a
                                                                                                                                                                                                                 // match the substring given.
 szMenu11:               .asciz  "<6> Save File (output.txt)\n\n"                                                                                                                                                // <6> Save File (output.txt)
 szMenu12:               .asciz  "<7> Quit\n\n"                                                                                                                                                                  // <7> Quit
-szClear:                        .asciz  "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"                                                                                                // To clear terminal
+szMenu13:               .asciz  "Enter a number (1-7): "                                                                                                                                                                  // <7> Quit
 
 szZeroBytes:    .asciz  "00000000"                                                                                                                                                                              // 0000000
 
@@ -37,9 +37,6 @@ displayMenu_driver:
         // Save dbNumNodes & dbStrBytes (rasm3_driver in x19 & x20)
         mov     x19,x0                                          // Move address of dbNumNodes to x19
         mov     x20,x1                                          // Move address of dbStrBytes to x20
-
-        ldr     x0,=szClear                                     // Load szClear
-        bl              putstring                                       // Clear the terminal
 
         ldr     x0,=szMenu1                                     // Load szMenu1
         bl              putstring                                       // Print szMenu1
@@ -113,6 +110,9 @@ print_total_bytes:
         bl              putstring                                       // Print szMenu11
 
         ldr     x0,=szMenu12                            // Load szMenu12
+        bl              putstring                                       // Print szMenu12
+
+        ldr     x0,=szMenu13                            // Load szMenu13
         bl              putstring                                       // Print szMenu12
 
 
