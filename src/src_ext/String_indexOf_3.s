@@ -1,4 +1,4 @@
-   .global String_indexOf_3
+.global String_indexOf_3
 
    .data
 
@@ -43,7 +43,7 @@ loop:
 
                 // check if portion of main string matches target string
                 mov     x1, x20                                 // put target string in parameter
-                bl              String_equals                   // x0 has substring and is checked with target
+                bl              String_equalsIgnoreCase                   // x0 has substring and is checked with target
 
                 mov     x24, x0                                 // save true/false in x24
 
@@ -71,7 +71,7 @@ no_match:
 exit_sequence:
 
    ldp   x29, x30, [sp], #16     // Pop x29 and x30, then move SP up 16 bytes
-   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes  
+   ldp   x27, x28, [sp], #16     // Pop x27 and x28, then move SP up 16 bytes
    ldp   x25, x26, [sp], #16     // Pop x25 and x26, then move SP up 16 bytes
    ldp   x23, x24, [sp], #16     // Pop x23 and x24, then move SP up 16 bytes
    ldp   x21, x22, [sp], #16     // Pop x21 and x22, then move SP up 16 bytes
