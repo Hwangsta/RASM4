@@ -1,10 +1,17 @@
 .global viewLinkedList_driver
 
+
+        .equ            BUFFER, 512
    .data
+
+szBuffer:               .skip           BUFFER                                                                  // string buffer
 
 szOutput:       .asciz  "**************** Linked List ****************"         // Output label for linked list output
 
-chLF:                   .byte           0x0a                                                                                                                            // line feed
+chLF:                   .byte           0x0a                                                                                                                       // line feed
+
+szOut1:                 .asciz  "["                                                                                             // Part of output
+szOut2:                 .asciz  "] "                                                                                            // Part of output
 
    .text
 viewLinkedList_driver:
@@ -18,6 +25,7 @@ viewLinkedList_driver:
 traverse:
 
         mov   x19,x0
+                  mov           x20,#0          // counter for index #
 
         ldr     x0,=chLF                                                // Load &chLF into x0
         bl              putch                                                   // Print
@@ -34,12 +42,27 @@ traverse_top:
    cmp   x19,#0                                  // checking for empty list
    beq   traverse_exit
 
+        ldr     x0,=szOut1
+        bl              putstring
+
+        mov     x0,x20
+        ldr     x1,=szBuffer
+        bl              int64asc
+
+        ldr     x0,=szBuffer
+        bl              putstring
+
+        ldr     x0,=szOut2
+        bl              putstring
+
    str   x19,[sp,#-16]!
 
    ldr   x0,[x19]                                // double de-reference
    bl    putstring
 
         ldr   x19,[sp],#16
+
+        add     x20,x20,#1
 
    add   x19,x19,#8                              // jump the x1 -> next field
    b     traverse_top
