@@ -25,7 +25,7 @@ viewLinkedList_driver:
 traverse:
 
         mov   x19,x0
-                  mov           x20,#0          // counter for index #
+                  mov           x20,#1          // counter for index #
 
         ldr     x0,=chLF                                                // Load &chLF into x0
         bl              putch                                                   // Print
