@@ -24,6 +24,7 @@ szCase4Out:             .asciz  "\n*** Edited string from entered index. ***\n\n
 szCase6Out:             .asciz  "\n*** Saved linked list to \"output.txt\". ***\n\n"
 szCase7Out:             .asciz  "\n*** Deleted linked list... *** \n *** Quitting Program ***\n\n"
 
+szIndexPrompt:          .asciz                  "Enter an index number: "
 
 headPtr_main:       .quad    0                        // tail of the linked list
 tailPtr_main:       .quad    0                        // head of the linked list
@@ -116,7 +117,9 @@ skip_2:
         b skip_3                                                                                                                        // skip to next case
 
 case_3:
-        mov     x2, #1
+        bl               get_index
+
+        mov     x2, x0
         ldr     x0,=headPtr_main
         ldr     x1,=tailPtr_main
         ldr     x3,=dbNumNodes
@@ -132,7 +135,9 @@ skip_3:
         b skip_4                                                                                                                        // skip to next case
 
 case_4:
-        mov     x1, #1
+        bl               get_index
+
+        mov     x1, x0
         ldr     x0,=headPtr_main
         ldr     x2,=dbStrBytes
         bl      editString_driver
@@ -164,6 +169,21 @@ case_6:
 
 skip_6:
 
+
+
+        // check case 7
+        cmp     x0,#'7'                                                                                                 // compare to ascii 6
+        beq     case_7                                                                                                  // branch to case_6
+
+        b skip_7                                                                                                                        // skip to next case
+
+case_7:
+   ldr     x0,=headPtr_main
+   bl      deleteLinkedList_driver
+
+        b                 quit
+skip_7:
+
         // out the freeze menu
         ldr     x0,=szFreezeMenu                                                                                // output Freeze Menu prompt
         bl              putstring                                                                                               // print
@@ -177,95 +197,8 @@ skip_6:
         // loop user inputs again
         b               input_loop                                                                                              // loop until quit
 
-/*
-ldr     x0,=headPtr_main
-ldr     x1,=tailPtr_main
-ldr     x2,=dbNumNodes
-ldr     x3,=dbStrBytes
-bl      readInputFile_driver
-
-ldr     x0,=dbNumNodes
-ldr     x1,=dbStrBytes
-bl      displayMenu_driver
-
-ldr     x0,=chLF
-bl              putch
-
-ldr     x0,=headPtr_main
-bl      viewLinkedList_driver
-
-
-mov     x2, #1
-ldr     x0,=headPtr_main
-ldr     x1,=tailPtr_main
-ldr     x3,=dbNumNodes
-ldr     x4,=dbStrBytes
-bl      deleteNode_driver
-
-mov     x2, #1
-ldr     x0,=headPtr_main
-ldr     x1,=tailPtr_main
-ldr     x3,=dbNumNodes
-ldr     x4,=dbStrBytes
-bl      deleteNode_driver
-
-
-ldr     x0,=dbNumNodes
-ldr     x1,=dbStrBytes
-bl      displayMenu_driver
-
-ldr     x0,=headPtr_main
-bl      viewLinkedList_driver
-
-ldr     x0,=headPtr_main
-ldr     x1,=tailPtr_main
-ldr     x2,=dbNumNodes
-ldr     x3,=dbStrBytes
-bl              getStringFromUser_driver
-
-ldr     x0,=headPtr_main
-ldr     x1,=tailPtr_main
-ldr     x2,=dbNumNodes
-ldr     x3,=dbStrBytes
-bl              getStringFromUser_driver
-
-ldr     x0,=headPtr_main
-bl      viewLinkedList_driver
-
-ldr     x0,=dbNumNodes
-ldr     x1,=dbStrBytes
-bl      displayMenu_driver
-
-        ldr     x0,=headPtr_main
-        bl              writeToFile_driver
-*/
 
 quit:
-///////////////// FOR HEAP MEMORY CONSUMPTION - MAKE SURE EVERYTIME WE MALLOC, WE ADD THE BYTES UP ***********************//////////////////
-
-/******************************************************************************/
-
-
-/****** Free up heap allocations **********************************************/
- /*  mov   x0, x21                       // Move address of modified input1Str into x0
-   bl    free                          // free that heap block
-
-   mov   x0, x22                       // Move address of modified input2Str into x0
-   bl    free                          // free that heap block
-
-   mov   x0, x23                       // Move address of modified input3Str into x0
-   bl    free                          // free that heap block
-
-   ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
-   bl    free                          // free that heap block
-   ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
-   bl    free                          // free that heap block
-   ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
-   bl    free                          // free that heap block
-   ldr   x0, [sp], #16                 // Pop the address of intermediate dynamic str into x0
-   bl    free                          // free that heap block */
-/******************************************************************************/
-
 
 /****** Terminate program ******/
    ldr   x0, =chLF                     // Load &chLF into x0
@@ -276,7 +209,7 @@ quit:
    svc   0                             // Call Linux to terminate
 
 
-/****** Helper function for ***************************************************/
+/****** Helper functions * ***************************************************/
 get_input:
         str     x30, [sp, #16]!                                         // push link register to stack
 
@@ -290,6 +223,24 @@ get_input:
         ldr     x30, [sp], #16                                                  // pop the link register from stack
 
         ret                                                                                             // return to caller
+
+get_index:
+        str     x30, [sp, #16]!                                         // push link register to stack
+
+                  ldr            x0,=szIndexPrompt
+                  bl             putstring
+
+        ldr     x0, =szBuffer                                                   // load address of buffer
+        mov     x1, #BUFFER                                                             // set buffer size
+        bl      getstring                                                               // get user string
+
+        ldr     x0, =szBuffer                                                   // load address of buffer
+                  bl             ascint64                                                                                                                            // convert string to int
+
+        ldr     x30, [sp], #16                                                  // pop the link register from stack
+
+        ret                                                                                             // return to caller
+
 /******************************************************************************/
 
 
